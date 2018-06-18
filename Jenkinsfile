@@ -26,19 +26,19 @@ node{
 node{
     stage 'Stop, Deploy and Start'
     // shutdown
-    sh 'curl -X POST http://localhost:8888/shutdown || true'
+    sh 'curl -X POST http://localhost:8082/shutdown || true'
     // copy file to target location
     sh 'cp target/*.jar /tmp/'
     // start the application
     sh 'nohup java -jar /tmp/*.jar &'
     // wait for application to respond
-    sh 'while ! httping -qc1 http://localhost:8888 ; do sleep 1 ; done'
+    sh 'while ! httping -qc1 http://localhost:8082 ; do sleep 1 ; done'
 }
  
 node{
     stage 'Smoketest'
     def workspacePath = pwd()
-    sh "curl --retry-delay 10 --retry 5 http://localhost:8888/info -o ${workspacePath}/info.json"
+    sh "curl --retry-delay 10 --retry 5 http://localhost:8082/info -o ${workspacePath}/info.json"
     if (deploymentOk()){
         return 0
     } else {
